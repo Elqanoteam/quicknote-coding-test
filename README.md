@@ -41,6 +41,7 @@ cp .env.example server/.env
 Edit `server/.env` and add your OpenAI API key:
 
 ```env
+AZURE_OPENAI_ENDPOINT=your_azure_openai_endpoint_here
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
