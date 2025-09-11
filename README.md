@@ -118,11 +118,14 @@ All configuration is handled via environment variables in `server/.env`:
 
 ```env
 # Required
+AZURE_OPENAI_ENDPOINT=your_azure_openai_endpoint_here
 OPENAI_API_KEY=your_openai_api_key_here
 
 # Optional (with defaults)
+USE_AZURE_OPENAI=true
+AZURE_OPENAI_API_VERSION=2024-08-01-preview
 OPENAI_GEN_MODEL=gpt-4o-mini
-OPENAI_EMBED_MODEL=text-embedding-3-small
+OPENAI_EMBED_MODEL=text-embedding-ada-002
 DATABASE_URL=sqlite:///./app.db
 CORS_ORIGINS=http://localhost:5173
 ```
@@ -175,124 +178,6 @@ The tests cover:
 - Monitor usage in OpenAI dashboard
 - Consider implementing rate limiting for production use
 
-## 🐛 Troubleshooting
-
-### Backend Issues
-
-**"OpenAI API Key not found"**
-- Ensure `OPENAI_API_KEY` is set in `server/.env`
-- Restart the server after changing environment variables
-
-**"Database connection failed"**
-- Check that the `server/` directory is writable
-- Delete `server/app.db` to reset the database
-
-**"Module not found"**
-- Ensure virtual environment is activated
-- Run `pip install -r requirements.txt` again
-
-### Frontend Issues
-
-**"Cannot connect to backend"**
-- Ensure backend server is running on port 8000
-- Check CORS configuration in `server/.env`
-
-**"Search not working"**
-- Verify OpenAI API key has sufficient credits
-- Check browser console for error messages
-
-### Performance Issues
-
-**Slow search results**
-- Consider adding database indexes for large datasets
-- Monitor OpenAI API response times
-
-**High memory usage**
-- Embeddings are stored in memory during search
-- Consider implementing pagination for large note collections
-
-## 🎯 Architecture Overview
-
-### Backend (FastAPI)
-```
-server/
-├── app/
-│   ├── main.py          # FastAPI app and routes
-│   ├── config.py        # Configuration management
-│   ├── models.py        # SQLModel database models
-│   ├── schemas.py       # Pydantic request/response schemas
-│   ├── db.py           # Database connection
-│   ├── ai.py           # OpenAI integration
-│   ├── routers/        # API route modules
-│   └── utils/          # Utility functions
-└── tests/              # Test suite
-```
-
-### Frontend (Vue 3)
-```
-web/
-├── src/
-│   ├── main.js         # App entry point
-│   ├── App.vue         # Root component
-│   ├── api.js          # Backend API client
-│   ├── styles.css      # Global styles
-│   ├── components/     # Reusable components
-│   └── pages/          # Route components
-```
-
-### Data Flow
-1. **Note Creation**: User input → AI analysis → Database storage
-2. **Semantic Search**: Query → Embedding → Similarity calculation → Results
-3. **Task Updates**: UI interaction → API call → Database update
-
-## 🚀 Deployment
-
-### Backend Deployment
-1. Set up Python environment on server
-2. Configure environment variables
-3. Use a production WSGI server like Gunicorn:
-   ```bash
-   gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker
-   ```
-
-### Frontend Deployment
-1. Build the production bundle:
-   ```bash
-   npm run build
-   ```
-2. Serve the `dist/` directory with a web server
-3. Update API URLs in `src/api.js` for production
-
-### Environment Variables for Production
-```env
-OPENAI_API_KEY=your_production_api_key
-CORS_ORIGINS=https://your-frontend-domain.com
-DATABASE_URL=postgresql://user:pass@host:port/db  # For production DB
-```
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Ensure all tests pass
-5. Submit a pull request
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-
-1. Check the troubleshooting section above
-2. Review the test files for example usage
-3. Check the API documentation at http://localhost:8000/docs
-4. Open an issue on the repository
-
 ---
 
-**Happy note-taking! 📝✨**
+**Happy coding! 📝✨**
