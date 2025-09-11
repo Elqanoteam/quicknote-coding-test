@@ -51,6 +51,7 @@
             :note="note"
             @view-note="viewNote"
             @tag-click="searchByTag"
+            @note-deleted="handleNoteDeleted"
           />
           
           <!-- Load more button -->
@@ -181,6 +182,12 @@ export default {
     async searchByTag(tag) {
       this.searchQuery = tag
       await this.loadNotes()
+    },
+
+    handleNoteDeleted(noteId) {
+      // Remove the note from the local list
+      this.notes = this.notes.filter(note => note.id !== noteId)
+      this.totalNotes -= 1
     }
   }
 }

@@ -65,6 +65,12 @@ export const api = {
     return apiRequest(`/notes/${id}`)
   },
 
+  async deleteNote(id) {
+    return apiRequest(`/notes/${id}`, {
+      method: 'DELETE'
+    })
+  },
+
   // Tasks endpoints
   async updateTask(id, data) {
     return apiRequest(`/tasks/${id}`, {

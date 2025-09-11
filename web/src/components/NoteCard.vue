@@ -23,9 +23,14 @@
     </div>
     
     <div class="note-actions">
-      <button class="view-button" @click="viewNote">
-        View Details
-      </button>
+      <div class="note-buttons">
+        <button class="view-button" @click="viewNote">
+          View Details
+        </button>
+        <button class="delete-button" @click="deleteNote" :disabled="deleting">
+          {{ deleting ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
       <span class="task-count">
         {{ note.tasks.length }} task{{ note.tasks.length !== 1 ? 's' : '' }}
       </span>
@@ -35,6 +40,7 @@
 
 <script>
 import TagChip from './TagChip.vue'
+import { api } from '../api.js'
 
 export default {
   name: 'NoteCard',
@@ -47,7 +53,12 @@ export default {
       required: true
     }
   },
-  emits: ['view-note', 'tag-click'],
+  emits: ['view-note', 'tag-click', 'note-deleted'],
+  data() {
+    return {
+      deleting: false
+    }
+  },
   methods: {
     formatDate(dateString) {
       const date = new Date(dateString)
@@ -76,6 +87,18 @@ export default {
     
     handleTagClick(tag) {
       this.$emit('tag-click', tag)
+    },
+
+    async deleteNote() {
+      this.deleting = true
+      try {
+        await api.deleteNote(this.note.id)
+        this.$emit('note-deleted', this.note.id)
+      } catch (error) {
+        console.error('Failed to delete note:', error)
+      } finally {
+        this.deleting = false
+      }
     }
   }
 }
@@ -153,6 +176,11 @@ export default {
   align-items: center;
 }
 
+.note-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .view-button {
   background: #3b82f6;
   color: white;
@@ -167,6 +195,27 @@ export default {
 
 .view-button:hover {
   background: #2563eb;
+}
+
+.delete-button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-button:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.delete-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
 }
 
 .task-count {

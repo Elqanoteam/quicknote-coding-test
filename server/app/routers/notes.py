@@ -235,3 +235,38 @@ async def get_note(note_id: int, session: Session = Depends(get_session)):
     except Exception as e:
         logger.error(f"Error fetching note {note_id}: {e}")
         raise HTTPException(status_code=500, detail="Failed to retrieve note")
+
+
+@router.delete("/{note_id}")
+async def delete_note(note_id: int, note_name: str, session: Session = Depends(get_session)):
+    """Delete a specific note by ID."""
+    try:
+        logger.info(f"Deleting note {note_name}: {note_id}")
+
+        # Get note to ensure it exists
+        statement = select(Note).where(Note.id == note_id)
+        note = session.exec(statement).first()
+
+        if not note:
+            raise HTTPException(status_code=404, detail="Note not found")
+
+        # Delete associated tasks first (due to foreign key constraint)
+        tasks_statement = select(Task).where(Task.note_id == note_id)
+        tasks = session.exec(tasks_statement).all()
+        for task in tasks:
+            session.delete(task)
+
+        # Delete the note
+        session.delete(note)
+        session.commit()
+
+        logger.info(f"Successfully deleted note {note_id} and {len(tasks)} associated tasks")
+
+        return {"message": "Note deleted successfully", "id": note_id}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting note {note_id}: {e}")
+        session.rollback()
+        raise HTTPException(status_code=500, detail="Failed to delete note")
