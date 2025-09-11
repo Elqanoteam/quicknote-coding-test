@@ -158,18 +158,6 @@ cd server
 pytest tests
 ```
 
-## 💰 Cost Considerations
-
-**OpenAI API Usage:**
-- Each note creation uses ~2-3 API calls (analysis + embedding)
-- Searches only use embeddings API
-- Using gpt-4o-mini and text-embedding-3-small for cost efficiency
-
-**Tips to manage costs:**
-- Keep note content concise (automatically truncated at 8000 characters)
-- Monitor usage in OpenAI dashboard
-- Consider implementing rate limiting for production use
-
 ## 🐛 Bug Hunting Tips
 
 - **Test all features systematically** - create notes, search, manage tasks
