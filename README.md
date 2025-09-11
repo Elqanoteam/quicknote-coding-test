@@ -14,6 +14,7 @@ A coding test application that replicates our technical stack. This is a notes c
 - **Setup is NOT part of the test** - you should be able to set up and launch the application following the provided instructions
 - If you encounter setup issues (e.g., dependency installation problems), these are not intentional bugs - please reach out for help
 - We will provide you with the required Azure OpenAI endpoint and API key
+- **AI Coding Assistants are Encouraged** - Feel free to use AI coding assistants like Cursor, Claude Code, GitHub Copilot, or similar tools to help you identify and fix bugs more efficiently
 
 Your task is to:
 1. Clone the repository and set up the application following the instructions below
