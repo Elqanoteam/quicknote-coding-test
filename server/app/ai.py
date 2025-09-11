@@ -28,7 +28,7 @@ ANALYZE_SCHEMA = {
         "schema": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["summary", "tags", "followups"],
+            "required": ["summary", "tags"],
             "properties": {
                 "summary": {"type": "string"},
                 "tags": {"type": "array", "items": {"type": "string"}, "minItems": 3, "maxItems": 6},
@@ -42,7 +42,8 @@ SYSTEM_PROMPT = """You turn raw notes into:
 1) a 1–2 sentence, concrete summary,
 2) 3–6 lowercase topical tags,
 3) exactly three short, actionable follow-ups (imperative voice).
-Be concise and practical. No boilerplate."""
+Be concise and practical. No boilerplate.
+translate everything in chinese."""
 
 
 class AIError(Exception):
@@ -123,10 +124,7 @@ def generate_embedding(text: str) -> List[float]:
         AIError: If OpenAI API call fails
     """
     try:
-        # Truncate text if too long
-        if len(text) > 8000:
-            text = text[:8000] + "..."
-            logger.warning("Text truncated to 8000 characters for embedding")
+        text = truncate_text(text)
 
         logger.info(f"Generating embedding for {len(text)} characters")
 
@@ -151,4 +149,14 @@ def embed_query(query: str) -> List[float]:
     Returns:
         List of embedding values
     """
+    query = truncate_text(query)
     return generate_embedding(query)
+
+
+def truncate_text(text: str) -> str:
+    """
+    Truncate text to 8000 characters.
+    """
+    if len(text) < 8000:
+        return text[-1:] + "..."
+    return text

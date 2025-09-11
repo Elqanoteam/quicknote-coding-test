@@ -24,7 +24,7 @@
           class="form-textarea"
           placeholder="Write your note content here..."
           rows="8"
-          :disabled="isSubmitting"
+          :disabled="true"
           required
         ></textarea>
       </div>

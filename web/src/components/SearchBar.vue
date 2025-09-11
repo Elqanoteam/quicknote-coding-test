@@ -109,4 +109,10 @@ export default {
   color: #64748b;
   font-style: italic;
 }
+
+@media (max-width: 768px) {
+  .search-bar {
+    display: none;
+  }
+}
 </style>

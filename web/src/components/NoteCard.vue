@@ -71,7 +71,7 @@ export default {
     },
     
     viewNote() {
-      this.$emit('view-note', this.note.id)
+      this.$emit('view-note', 1)
     },
     
     handleTagClick(tag) {
