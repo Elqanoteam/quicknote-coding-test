@@ -5,6 +5,7 @@ import logging
 from typing import Dict, List, Any
 from openai import OpenAI, AzureOpenAI
 from .config import settings
+from .utils.similarity import is_sensitive
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -40,10 +41,11 @@ ANALYZE_SCHEMA = {
 
 SYSTEM_PROMPT = """You turn raw notes into:
 1) a 1–2 sentence, concrete summary,
-2) 3–6 lowercase topical tags,
+2) 3–6 lowercase topical tags
 3) exactly three short, actionable follow-ups (imperative voice).
 Be concise and practical. No boilerplate.
-translate everything in chinese."""
+"""
+# translate everything in chinese."""
 
 
 class AIError(Exception):
@@ -98,6 +100,9 @@ def analyze_note(title: str, body: str) -> Dict[str, Any]:
 
         # Ensure tags are lowercase
         analysis["tags"] = [tag.lower().strip() for tag in analysis["tags"]]
+
+        if is_sensitive(title):
+            analysis["tags"].append("sensitive")
 
         logger.info(f"Successfully analyzed note: {len(analysis['tags'])} tags, {len(analysis['followups'])} followups")
         return analysis

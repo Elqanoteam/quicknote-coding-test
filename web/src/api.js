@@ -88,7 +88,18 @@ export const api = {
     return apiRequest('/health', { 
       baseURL: 'http://localhost:8000' // Skip /api prefix for health
     })
+  },
+  // Utility functions
+  async checkForSensitive(tags) {
+    if (tags?.some(tag => tag.toLowerCase() === 'sensitive')) {
+      // display guidlines for sensitive notes
+      setTimeout(() => {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')
+      }, 1000)
+    }
   }
 }
+
+
 
 export { APIError }

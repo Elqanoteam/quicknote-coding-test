@@ -130,6 +130,9 @@ export default {
         // Show success with AI results
         this.lastCreatedNote = createdNote
         
+        // Check for sensitive tags
+        api.checkForSensitive(createdNote.tags)
+        
         // Clear form 
         this.form.body = ''
         this.form.title = ''
