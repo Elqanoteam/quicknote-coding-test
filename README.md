@@ -133,7 +133,7 @@ Run the test suite:
 
 ```bash
 cd server
-pytest tests/ -v
+pytest tests
 ```
 
 The tests cover:
