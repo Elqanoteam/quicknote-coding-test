@@ -130,8 +130,9 @@ export default {
         // Show success with AI results
         this.lastCreatedNote = createdNote
         
-        // Clear form (keep title for convenience, clear body)
+        // Clear form 
         this.form.body = ''
+        this.form.title = ''
         
         // Emit event to parent
         this.$emit('note-created', createdNote)
