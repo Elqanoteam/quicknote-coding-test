@@ -47,7 +47,11 @@ MOCK_ANALYSES = {
     "meeting": {
         "summary": "Notes from team meeting discussing quarterly goals.",
         "tags": ["meeting", "goals", "team"],
-        "followups": ["Send meeting summary", "Schedule follow-up", "Update project board"],
+        "followups": [
+            "Send meeting summary",
+            "Schedule follow-up",
+            "Update project board",
+        ],
     },
     "research": {
         "summary": "Research findings on market trends and opportunities.",
@@ -72,7 +76,9 @@ class TestSemanticSearch:
     @patch("app.routers.notes.analyze_note")
     @patch("app.routers.notes.generate_embedding")
     @patch("app.routers.notes.embed_query")
-    def test_semantic_search_ordering(self, mock_embed_query, mock_embedding, mock_analysis, client):
+    def test_semantic_search_ordering(
+        self, mock_embed_query, mock_embedding, mock_analysis, client
+    ):
         """Test that semantic search returns results ordered by similarity."""
 
         # Create notes with different topics
@@ -113,7 +119,10 @@ class TestSemanticSearch:
         # Create the notes
         created_notes = []
         for note_data in notes_data:
-            response = client.post("/api/notes/", json={"title": note_data["title"], "body": note_data["body"]})
+            response = client.post(
+                "/api/notes/",
+                json={"title": note_data["title"], "body": note_data["body"]},
+            )
             created_notes.append(response.json())
 
         # Test search for "project" - should return project note first
@@ -136,7 +145,9 @@ class TestSemanticSearch:
         max_similarity = max(similarity_scores)
 
         # Find the note with highest similarity
-        most_similar_note = next(note for note in data["notes"] if note["similarity"] == max_similarity)
+        most_similar_note = next(
+            note for note in data["notes"] if note["similarity"] == max_similarity
+        )
 
         # Should be the project planning note
         assert "Project Planning" in most_similar_note["title"]
@@ -144,7 +155,9 @@ class TestSemanticSearch:
     @patch("app.routers.notes.analyze_note")
     @patch("app.routers.notes.generate_embedding")
     @patch("app.routers.notes.embed_query")
-    def test_search_with_no_results(self, mock_embed_query, mock_embedding, mock_analysis, client):
+    def test_search_with_no_results(
+        self, mock_embed_query, mock_embedding, mock_analysis, client
+    ):
         """Test search when no notes exist."""
         mock_embed_query.return_value = MOCK_EMBEDDINGS["project_query"]
 
@@ -158,7 +171,9 @@ class TestSemanticSearch:
     @patch("app.routers.notes.analyze_note")
     @patch("app.routers.notes.generate_embedding")
     @patch("app.routers.notes.embed_query")
-    def test_search_pagination(self, mock_embed_query, mock_embedding, mock_analysis, client):
+    def test_search_pagination(
+        self, mock_embed_query, mock_embedding, mock_analysis, client
+    ):
         """Test semantic search with pagination."""
         # Setup mocks
         mock_analysis.return_value = MOCK_ANALYSES["project"]
@@ -167,7 +182,10 @@ class TestSemanticSearch:
 
         # Create multiple notes
         for i in range(5):
-            note_data = {"title": f"Project Note {i}", "body": f"This is project note number {i} about planning."}
+            note_data = {
+                "title": f"Project Note {i}",
+                "body": f"This is project note number {i} about planning.",
+            }
             client.post("/api/notes/", json=note_data)
 
         # Test pagination

@@ -22,11 +22,19 @@ class Settings:
 
     # Azure OpenAI Configuration
     AZURE_OPENAI_ENDPOINT: str = os.getenv("AZURE_OPENAI_ENDPOINT", "")
-    AZURE_OPENAI_API_VERSION: str = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
-    USE_AZURE_OPENAI: bool = os.getenv("USE_AZURE_OPENAI", "").lower() in ("true", "1", "yes")
+    AZURE_OPENAI_API_VERSION: str = os.getenv(
+        "AZURE_OPENAI_API_VERSION", "2024-02-15-preview"
+    )
+    USE_AZURE_OPENAI: bool = os.getenv("USE_AZURE_OPENAI", "").lower() in (
+        "true",
+        "1",
+        "yes",
+    )
 
     # CORS
-    CORS_ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+    CORS_ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(
+        ","
+    )
 
     # API Configuration
     API_PREFIX: str = "/api"
@@ -37,7 +45,9 @@ class Settings:
             raise ValueError("OPENAI_API_KEY environment variable is required")
 
         if self.USE_AZURE_OPENAI and not self.AZURE_OPENAI_ENDPOINT:
-            raise ValueError("AZURE_OPENAI_ENDPOINT environment variable is required when USE_AZURE_OPENAI is true")
+            raise ValueError(
+                "AZURE_OPENAI_ENDPOINT environment variable is required when USE_AZURE_OPENAI is true"
+            )
 
 
 # Global settings instance

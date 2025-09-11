@@ -42,7 +42,9 @@ def cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:
     return max(-1.0, min(1.0, similarity))
 
 
-def cosine_similarity_batch(query_vec: List[float], matrix_of_vecs: List[List[float]]) -> List[Tuple[int, float]]:
+def cosine_similarity_batch(
+    query_vec: List[float], matrix_of_vecs: List[List[float]]
+) -> List[Tuple[int, float]]:
     """
     Calculate cosine similarity between a query vector and multiple vectors.
 

@@ -72,7 +72,10 @@ async def create_note(note_data: NoteCreate, session: Session = Depends(get_sess
             summary=note.summary,
             tags=json.loads(note.tags_json),
             created_at=note.created_at,
-            tasks=[{"id": task.id, "text": task.text, "status": task.status} for task in tasks],
+            tasks=[
+                {"id": task.id, "text": task.text, "status": task.status}
+                for task in tasks
+            ],
         )
 
     except AIError as e:
@@ -109,7 +112,9 @@ async def list_notes(
             all_notes = session.exec(statement).all()
 
             if not all_notes:
-                return NotesSearchResponse(notes=[], total=0, limit=limit, offset=offset)
+                return NotesSearchResponse(
+                    notes=[], total=0, limit=limit, offset=offset
+                )
 
             # Prepare embeddings for similarity calculation
             note_embeddings: List[Tuple[int, List[float]]] = []
@@ -149,19 +154,29 @@ async def list_notes(
                         summary=note.summary,
                         tags=json.loads(note.tags_json),
                         created_at=note.created_at,
-                        tasks=[{"id": task.id, "text": task.text, "status": task.status} for task in tasks],
+                        tasks=[
+                            {"id": task.id, "text": task.text, "status": task.status}
+                            for task in tasks
+                        ],
                         similarity=round(similarity_map[note.id], 0),
                     )
                     notes_with_similarity.append(note_out)
 
                 # Sort by similarity
-                notes_with_similarity.sort(key=lambda x: x.similarity or 0, reverse=True)
+                notes_with_similarity.sort(
+                    key=lambda x: x.similarity or 0, reverse=True
+                )
 
                 return NotesSearchResponse(
-                    notes=notes_with_similarity, total=len(similarities), limit=limit, offset=offset
+                    notes=notes_with_similarity,
+                    total=len(similarities),
+                    limit=limit,
+                    offset=offset,
                 )
             else:
-                return NotesSearchResponse(notes=[], total=0, limit=limit, offset=offset)
+                return NotesSearchResponse(
+                    notes=[], total=0, limit=limit, offset=offset
+                )
 
         else:
             # Regular pagination without search
@@ -172,7 +187,12 @@ async def list_notes(
             total_notes = len(session.exec(count_statement).all())
 
             # Get paginated notes (newest first)
-            statement = select(Note).order_by(Note.created_at.desc()).offset(offset).limit(limit)
+            statement = (
+                select(Note)
+                .order_by(Note.created_at.desc())
+                .offset(offset)
+                .limit(limit)
+            )
             notes = session.exec(statement).all()
 
             # Convert to response format
@@ -189,11 +209,16 @@ async def list_notes(
                     summary=note.summary,
                     tags=json.loads(note.tags_json),
                     created_at=note.created_at,
-                    tasks=[{"id": task.id, "text": task.text, "status": task.status} for task in tasks],
+                    tasks=[
+                        {"id": task.id, "text": task.text, "status": task.status}
+                        for task in tasks
+                    ],
                 )
                 notes_out.append(note_out)
 
-            return NotesSearchResponse(notes=notes_out, total=total_notes, limit=limit, offset=offset)
+            return NotesSearchResponse(
+                notes=notes_out, total=total_notes, limit=limit, offset=offset
+            )
 
     except AIError as e:
         logger.error(f"AI error during search: {e}")
@@ -227,7 +252,10 @@ async def get_note(note_id: int, session: Session = Depends(get_session)):
             summary=note.summary,
             tags=json.loads(note.tags_json),
             created_at=note.created_at,
-            tasks=[{"id": task.id, "text": task.text, "status": task.status} for task in tasks],
+            tasks=[
+                {"id": task.id, "text": task.text, "status": task.status}
+                for task in tasks
+            ],
         )
 
     except HTTPException:
@@ -238,7 +266,9 @@ async def get_note(note_id: int, session: Session = Depends(get_session)):
 
 
 @router.delete("/{note_id}")
-async def delete_note(note_id: int, note_name: str, session: Session = Depends(get_session)):
+async def delete_note(
+    note_id: int, note_name: str, session: Session = Depends(get_session)
+):
     """Delete a specific note by ID."""
     try:
         logger.info(f"Deleting note {note_name}: {note_id}")
@@ -260,7 +290,9 @@ async def delete_note(note_id: int, note_name: str, session: Session = Depends(g
         session.delete(note)
         session.commit()
 
-        logger.info(f"Successfully deleted note {note_id} and {len(tasks)} associated tasks")
+        logger.info(
+            f"Successfully deleted note {note_id} and {len(tasks)} associated tasks"
+        )
 
         return {"message": "Note deleted successfully", "id": note_id}
 

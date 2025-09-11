@@ -18,7 +18,9 @@ if settings.USE_AZURE_OPENAI:
         api_version=settings.AZURE_OPENAI_API_VERSION,
     )
 else:
-    client = OpenAI(api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_API_BASE_URL)
+    client = OpenAI(
+        api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_API_BASE_URL
+    )
 
 # Structured output schema for note analysis
 ANALYZE_SCHEMA = {
@@ -32,8 +34,18 @@ ANALYZE_SCHEMA = {
             "required": ["summary", "tags"],
             "properties": {
                 "summary": {"type": "string"},
-                "tags": {"type": "array", "items": {"type": "string"}, "minItems": 3, "maxItems": 6},
-                "followups": {"type": "array", "items": {"type": "string"}, "minItems": 3, "maxItems": 3},
+                "tags": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 3,
+                    "maxItems": 6,
+                },
+                "followups": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 3,
+                    "maxItems": 3,
+                },
             },
         },
     },
@@ -44,8 +56,7 @@ SYSTEM_PROMPT = """You turn raw notes into:
 2) 3–6 lowercase topical tags
 3) exactly three short, actionable follow-ups (imperative voice).
 Be concise and practical. No boilerplate.
-"""
-# translate everything in chinese."""
+Translate everything in chinese."""
 
 
 class AIError(Exception):
@@ -82,7 +93,10 @@ def analyze_note(title: str, body: str) -> Dict[str, Any]:
         # Call OpenAI with structured output
         response = client.chat.completions.create(
             model=settings.OPENAI_GEN_MODEL,
-            messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": note_text}],
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": note_text},
+            ],
             response_format=ANALYZE_SCHEMA,
             timeout=30,
         )
@@ -104,7 +118,9 @@ def analyze_note(title: str, body: str) -> Dict[str, Any]:
         if is_sensitive(title):
             analysis["tags"].append("sensitive")
 
-        logger.info(f"Successfully analyzed note: {len(analysis['tags'])} tags, {len(analysis['followups'])} followups")
+        logger.info(
+            f"Successfully analyzed note: {len(analysis['tags'])} tags, {len(analysis['followups'])} followups"
+        )
         return analysis
 
     except json.JSONDecodeError as e:
@@ -133,10 +149,14 @@ def generate_embedding(text: str) -> List[float]:
 
         logger.info(f"Generating embedding for {len(text)} characters")
 
-        response = client.embeddings.create(model=settings.OPENAI_EMBED_MODEL, input=[text], timeout=30)
+        response = client.embeddings.create(
+            model=settings.OPENAI_EMBED_MODEL, input=[text], timeout=30
+        )
 
         embedding = response.data[0].embedding
-        logger.info(f"Successfully generated embedding with {len(embedding)} dimensions")
+        logger.info(
+            f"Successfully generated embedding with {len(embedding)} dimensions"
+        )
         return embedding
 
     except Exception as e:

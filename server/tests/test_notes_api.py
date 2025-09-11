@@ -43,7 +43,11 @@ def client_fixture(session: Session):
 MOCK_ANALYSIS = {
     "summary": "A test note about project planning and task management.",
     "tags": ["planning", "project", "management"],
-    "followups": ["Review project requirements", "Create task breakdown", "Schedule team meeting"],
+    "followups": [
+        "Review project requirements",
+        "Create task breakdown",
+        "Schedule team meeting",
+    ],
 }
 
 MOCK_EMBEDDING = [0.1] * 1536  # Mock embedding vector
@@ -61,7 +65,10 @@ class TestNotesAPI:
         mock_embedding.return_value = MOCK_EMBEDDING
 
         # Test data
-        note_data = {"title": "Test Note", "body": "This is a test note about project planning."}
+        note_data = {
+            "title": "Test Note",
+            "body": "This is a test note about project planning.",
+        }
 
         # Make request
         response = client.post("/api/notes/", json=note_data)
@@ -153,7 +160,10 @@ class TestNotesAPI:
 
         # Create a few notes
         for i in range(3):
-            note_data = {"title": f"Test Note {i}", "body": f"This is test note number {i}."}
+            note_data = {
+                "title": f"Test Note {i}",
+                "body": f"This is test note number {i}.",
+            }
             client.post("/api/notes/", json=note_data)
 
         # List notes
@@ -173,7 +183,9 @@ class TestNotesAPI:
     @patch("app.routers.notes.analyze_note")
     @patch("app.routers.notes.generate_embedding")
     @patch("app.routers.notes.embed_query")
-    def test_list_notes_with_search(self, mock_embed_query, mock_embedding, mock_analysis, client):
+    def test_list_notes_with_search(
+        self, mock_embed_query, mock_embedding, mock_analysis, client
+    ):
         """Test semantic search functionality."""
         # Setup mocks
         mock_analysis.return_value = MOCK_ANALYSIS
@@ -181,7 +193,10 @@ class TestNotesAPI:
         mock_embed_query.return_value = MOCK_EMBEDDING  # Same embedding for simplicity
 
         # Create a note
-        note_data = {"title": "Project Planning", "body": "This note covers project planning and management."}
+        note_data = {
+            "title": "Project Planning",
+            "body": "This note covers project planning and management.",
+        }
         client.post("/api/notes/", json=note_data)
 
         # Search for notes
@@ -219,7 +234,10 @@ class TestNotesAPI:
         mock_embedding.return_value = MOCK_EMBEDDING
 
         # Create a note first
-        note_data = {"title": "Test Note to Delete", "body": "This note will be deleted."}
+        note_data = {
+            "title": "Test Note to Delete",
+            "body": "This note will be deleted.",
+        }
         create_response = client.post("/api/notes/", json=note_data)
         assert create_response.status_code == 200
 
@@ -258,7 +276,9 @@ class TestNotesAPI:
 
     @patch("app.routers.notes.analyze_note")
     @patch("app.routers.notes.generate_embedding")
-    def test_delete_note_with_multiple_tasks(self, mock_embedding, mock_analysis, client, session):
+    def test_delete_note_with_multiple_tasks(
+        self, mock_embedding, mock_analysis, client, session
+    ):
         """Test deleting a note with multiple associated tasks."""
         # Setup mock with more tasks
         mock_analysis_with_tasks = {
@@ -275,7 +295,10 @@ class TestNotesAPI:
         mock_embedding.return_value = MOCK_EMBEDDING
 
         # Create a note with multiple tasks
-        note_data = {"title": "Note with Tasks", "body": "This note has multiple tasks."}
+        note_data = {
+            "title": "Note with Tasks",
+            "body": "This note has multiple tasks.",
+        }
         create_response = client.post("/api/notes/", json=note_data)
         assert create_response.status_code == 200
 
@@ -294,7 +317,9 @@ class TestNotesAPI:
 
     @patch("app.routers.notes.analyze_note")
     @patch("app.routers.notes.generate_embedding")
-    def test_delete_note_affects_list_count(self, mock_embedding, mock_analysis, client, session):
+    def test_delete_note_affects_list_count(
+        self, mock_embedding, mock_analysis, client, session
+    ):
         """Test that deleting a note affects the total count in list responses."""
         # Setup mocks
         mock_analysis.return_value = MOCK_ANALYSIS

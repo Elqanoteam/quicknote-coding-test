@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 @router.patch("/{task_id}", response_model=TaskOut)
-async def update_task(task_id: int, task_update: TaskUpdate, session: Session = Depends(get_session)):
+async def update_task(
+    task_id: int, task_update: TaskUpdate, session: Session = Depends(get_session)
+):
     """
     Update a task's status.
 

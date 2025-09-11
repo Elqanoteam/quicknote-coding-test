@@ -7,12 +7,14 @@ from datetime import datetime
 
 class NoteCreate(BaseModel):
     """Schema for creating a new note."""
+
     title: str = Field(min_length=1, max_length=500)
     body: str = Field(min_length=1, max_length=10000)
 
 
 class TaskOut(BaseModel):
     """Schema for task output."""
+
     id: int
     text: str
     status: str
@@ -20,11 +22,13 @@ class TaskOut(BaseModel):
 
 class TaskUpdate(BaseModel):
     """Schema for updating a task."""
+
     status: str = Field(pattern="^(open|done)$")
 
 
 class NoteOut(BaseModel):
     """Schema for note output."""
+
     id: int
     title: str
     body: str
@@ -40,6 +44,7 @@ class NoteOut(BaseModel):
 
 class NotesSearchResponse(BaseModel):
     """Schema for notes search response."""
+
     notes: List[NoteOut]
     total: int
     limit: int
@@ -48,4 +53,5 @@ class NotesSearchResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     """Schema for health check response."""
+
     status: str = "ok"
